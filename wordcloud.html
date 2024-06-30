@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trump vs Biden Word Cloud</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+</head>
+<body>
+    <h1>Trump vs Biden Word Cloud</h1>
+    <div id="my_dataviz"></div>
+    <script>
+        // Load the data
+        d3.json("words.json").then(function(data) {
+            // Combine Trump and Biden data
+            var combinedWords = [];
+            for (var word in data.TRUMP) {
+                combinedWords.push({
+                    text: word,
+                    size: data.TRUMP[word] + (data.BIDEN[word] || 0)
+                });
+            }
+            for (var word in data.BIDEN) {
+                if (!data.TRUMP[word]) {
+                    combinedWords.push({
+                        text: word,
+                        size: data.BIDEN[word]
+                    });
+                }
+            }
+
+            // Set the dimensions and margins of the graph
+            var margin = {top: 10, right: 10, bottom: 10, left: 10},
+                width = 800 - margin.left - margin.right,
+                height = 600 - margin.top - margin.bottom;
+
+            // Append the svg object to the body of the page
+            var svg = d3.select("#my_dataviz").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Constructs a new cloud layout instance
+            var layout = d3.layout.cloud()
+                .size([width, height])
+                .words(combinedWords)
+                .padding(5)
+                .rotate(function() { return ~~(Math.random() * 2) * 90; })
+                .fontSize(function(d) { return Math.sqrt(d.size) * 10; })
+                .on("end", draw);
+
+            layout.start();
+
+            // This function draws the words
+            function draw(words) {
+                svg.append("g")
+                    .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                    .selectAll("text")
+                    .data(words)
+                    .enter().append("text")
+                    .style("font-size", function(d) { return d.size + "px"; })
+                    .style("fill", function(d) { 
+                        // Color words based on which candidate used them more
+                        if (data.TRUMP[d.text] > data.BIDEN[d.text]) return "red";
+                        else if (data.BIDEN[d.text] > data.TRUMP[d.text]) return "blue";
+                        else return "purple"; // If used equally
+                    })
+                    .attr("text-anchor", "middle")
+                    .attr("transform", function(d) {
+                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                    })
+                    .text(function(d) { return d.text; });
+            }
+        });
+    </script>
+</body>
+</html>

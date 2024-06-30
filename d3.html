@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+<style>
+        #chart, #wordcloud {
+            width: 600px;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        .bar-label {
+            font-size: 12px;
+            text-anchor: middle;
+        }
+        .dropdown, .result {
+            margin-bottom: 20px;
+        }
+</style>
+<body>
+    <!-- <select id="wordSelect"></select> -->
+
+    <h2>Word Cloud</h2>
+    <div id="wordcloud"></div> 
+
+    <div class="dropdown">
+        <label for="wordSelect">Select a word: </label>
+        <select id="wordSelect"></select>
+    </div>
+    <div class="result" id="result">
+        Trump: <span id="trumpCount">0</span><br>
+        Biden: <span id="bidenCount">0</span>
+    </div>
+
+    <div id="chart"></div>
+
+    <script>
+        // Load the data
+        d3.json("words.json").then(function(data) {
+            const words = Object.keys(data.TRUMP);
+
+
+        // Populate dropdown
+        const select = d3.select("#wordSelect")
+                .selectAll("option")
+                .data(words)
+                .enter()
+                .append("option")
+                .text(d => d)
+                .attr("value", d => d);
+
+            // Set up SVG
+            const margin = {top: 20, right: 20, bottom: 30, left: 40};
+            const width = 600 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            const svg = d3.select("#chart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            // Set up scales
+            const x = d3.scaleBand()
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .range([height, 0]);
+
+            // Add axes
+            svg.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .attr("class", "x-axis");
+
+            svg.append("g")
+                .attr("class", "y-axis");
+
+            // Function to update chart
+            function updateChart(word) {
+                const chartData = [
+                    {name: "Trump", value: data.TRUMP[word]},
+                    {name: "Biden", value: data.BIDEN[word]}
+                ];
+
+                // Update result div
+                d3.select("#trumpCount").text(data.TRUMP[word]);
+                d3.select("#bidenCount").text(data.BIDEN[word]);
+
+                x.domain(chartData.map(d => d.name));
+                y.domain([0, d3.max(chartData, d => d.value)]);
+
+                svg.select(".x-axis")
+                    .call(d3.axisBottom(x));
+
+                svg.select(".y-axis")
+                    .call(d3.axisLeft(y));
+
+                const bars = svg.selectAll(".bar")
+                    .data(chartData);
+
+                bars.enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .merge(bars)
+                    .transition()
+                    .duration(1000)
+                    .attr("x", d => x(d.name))
+                    .attr("y", d => y(d.value))
+                    .attr("width", x.bandwidth())
+                    .attr("height", d => height - y(d.value))
+                    .attr("fill", (d, i) => i === 0 ? "red" : "blue");
+
+                bars.exit().remove();
+            }
+
+            // Initial chart
+            updateChart(words[0]);
+
+            // Update chart when selection changes
+            d3.select("#wordSelect").on("change", function() {
+                updateChart(this.value);
+            });
+
+            // Word cloud
+        var combinedWords = [];
+        for (var word in data.TRUMP) {
+            combinedWords.push({
+                text: word,
+                size: data.TRUMP[word] + (data.BIDEN[word] || 0)
+            });
+        }
+        for (var word in data.BIDEN) {
+            if (!data.TRUMP[word]) {
+                combinedWords.push({
+                    text: word,
+                    size: data.BIDEN[word]
+                });
+            }
+        }
+
+            // Set up SVG for word cloud
+            var wcWidth = 600;
+            var wcHeight = 400;
+            var wcSvg = d3.select("#wordcloud").append("svg")
+                .attr("width", wcWidth)
+                .attr("height", wcHeight)
+                .append("g")
+                .attr("transform", "translate(" + wcWidth / 2 + "," + wcHeight / 2 + ")");
+
+            // Create word cloud layout
+            var layout = d3.layout.cloud()
+                .size([wcWidth, wcHeight])
+                .words(combinedWords)
+                .padding(5)
+                .rotate(function() { return ~~(Math.random() * 2) * 90; })
+                .fontSize(function(d) { return Math.sqrt(d.size) * 5; })
+                .on("end", drawWordCloud);
+
+            layout.start();
+
+// Function to draw word cloud
+function drawWordCloud(words) {
+                wcSvg.selectAll("text")
+                    .data(words)
+                    .enter().append("text")
+                    .style("font-size", function(d) { return d.size + "px"; })
+                    .style("fill", function(d) { 
+                        if (data.TRUMP[d.text] > data.BIDEN[d.text]) return "red";
+                        else if (data.BIDEN[d.text] > data.TRUMP[d.text]) return "blue";
+                        else return "purple";
+                    })
+                    .attr("text-anchor", "middle")
+                    .attr("transform", function(d) {
+                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                    })
+                    .text(function(d) { return d.text; });
+            }
+        });
+</script>
+
+</body>
+</html>

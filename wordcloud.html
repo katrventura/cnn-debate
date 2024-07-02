@@ -10,70 +10,170 @@
 <body>
     <h1>Trump vs Biden Word Cloud</h1>
     <div id="my_dataviz"></div>
-    <script>
-        // Load the data
-        d3.json("words.json").then(function(data) {
-            // Combine Trump and Biden data
-            var combinedWords = [];
-            for (var word in data.TRUMP) {
-                combinedWords.push({
-                    text: word,
-                    size: data.TRUMP[word] + (data.BIDEN[word] || 0)
-                });
-            }
-            for (var word in data.BIDEN) {
-                if (!data.TRUMP[word]) {
-                    combinedWords.push({
-                        text: word,
-                        size: data.BIDEN[word]
-                    });
-                }
-            }
 
-            // Set the dimensions and margins of the graph
-            var margin = {top: 10, right: 10, bottom: 10, left: 10},
-                width = 800 - margin.left - margin.right,
-                height = 600 - margin.top - margin.bottom;
+    <div class="dropdown">
+        <label for="wordSelect">Select a word: </label>
+        <select id="wordSelect"></select>
+    </div>
+    <div class="result" id="result">
+        Trump: <span id="trumpCount">0</span><br>
+        Biden: <span id="bidenCount">0</span>
+    </div>
 
-            // Append the svg object to the body of the page
-            var svg = d3.select("#my_dataviz").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    <div id="chart"></div>
 
-            // Constructs a new cloud layout instance
-            var layout = d3.layout.cloud()
-                .size([width, height])
-                .words(combinedWords)
-                .padding(5)
-                .rotate(function() { return ~~(Math.random() * 2) * 90; })
-                .fontSize(function(d) { return Math.sqrt(d.size) * 10; })
-                .on("end", draw);
 
-            layout.start();
+<script>
+    // Word cloud load the data
 
-            // This function draws the words
-            function draw(words) {
-                svg.append("g")
-                    .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
-                    .selectAll("text")
-                    .data(words)
-                    .enter().append("text")
-                    .style("font-size", function(d) { return d.size + "px"; })
-                    .style("fill", function(d) { 
-                        // Color words based on which candidate used them more
-                        if (data.TRUMP[d.text] > data.BIDEN[d.text]) return "red";
-                        else if (data.BIDEN[d.text] > data.TRUMP[d.text]) return "blue";
-                        else return "purple"; // If used equally
-                    })
-                    .attr("text-anchor", "middle")
-                    .attr("transform", function(d) {
-                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                    })
-                    .text(function(d) { return d.text; });
-            }
-        });
-    </script>
+    function createWordCloud() {
+    d3.json("word-count2.json").then(function(data) {
+    // Combine Trump and Biden data
+    var combinedWords = data.index.map((word, i) => ({
+        text: word,
+        size: data.data[i][0] + data.data[i][1]  // Sum of TRUMP and BIDEN counts
+    }));
+
+    // Set the dimensions and margins of the graph
+    var margin = {top: 10, right: 10, bottom: 10, left: 10},
+        width = 800 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+
+    // Append the svg object to the body of the page
+    var svg = d3.select("#my_dataviz").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Constructs a new cloud layout instance
+    var layout = d3.layout.cloud()
+        .size([width, height])
+        .words(combinedWords)
+        .padding(5)
+        .rotate(function() { return ~~(Math.random() * 2) * 90; })
+        .fontSize(function(d) { return Math.sqrt(d.size) * 10; })
+        .on("end", draw);
+
+    layout.start();
+
+    // This function draws the words
+    function draw(words) {
+        svg.append("g")
+            .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+            .selectAll("text")
+            .data(words)
+            .enter().append("text")
+            .style("font-size", function(d) { return d.size + "px"; })
+            .style("fill", function(d, i) { 
+                // Color words based on which candidate used them more
+                if (data.data[i][0] > data.data[i][1]) return "red";  // TRUMP
+                else if (data.data[i][1] > data.data[i][0]) return "blue";  // BIDEN
+                else return "purple"; // If used equally
+            })
+            .attr("text-anchor", "middle")
+            .attr("transform", function(d) {
+                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .text(function(d) { return d.text; });
+        }
+    });
+}
+function createChartAndDropdown() {
+    d3.json("words.json").then(function(data) {
+        const text = Object.keys(data.TRUMP);
+
+        // Populate dropdown
+        const select = d3.select("#wordSelect")
+                .selectAll("option")
+                .data(text)
+                .enter()
+                .append("option")
+                .text(d => d)
+                .attr("value", d => d);
+
+        // Set up SVG
+        const margin = {top: 20, right: 20, bottom: 30, left: 40};
+        const width = 600 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Set up scales
+        const x = d3.scaleBand()
+            .range([0, width])
+            .padding(0.1);
+
+        const y = d3.scaleLinear()
+            .range([height, 0]);
+
+        // Add axes
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .attr("class", "x-axis");
+
+        svg.append("g")
+            .attr("class", "y-axis");
+
+        // Function to update chart
+        function updateChart(text) {
+            const chartData = [
+                {name: "Trump", value: data.TRUMP[text]},
+                {name: "Biden", value: data.BIDEN[text]}
+            ];
+
+            // Update result div
+            d3.select("#trumpCount").text(data.TRUMP[text]);
+            d3.select("#bidenCount").text(data.BIDEN[text]);
+
+            x.domain(chartData.map(d => d.name));
+            y.domain([0, d3.max(chartData, d => d.value)]);
+
+            svg.select(".x-axis")
+                .call(d3.axisBottom(x));
+
+            svg.select(".y-axis")
+                .call(d3.axisLeft(y));
+
+            const bars = svg.selectAll(".bar")
+                .data(chartData);
+
+            bars.enter()
+                .append("rect")
+                .attr("class", "bar")
+                .merge(bars)
+                .transition()
+                .duration(1000)
+                .attr("x", d => x(d.name))
+                .attr("y", d => y(d.value))
+                .attr("width", x.bandwidth())
+                .attr("height", d => height - y(d.value))
+                .attr("fill", (d, i) => i === 0 ? "red" : "blue");
+
+            bars.exit().remove();
+        }
+
+        // Initial chart
+        updateChart(text[0]);
+
+                    // Update chart when selection changes
+                    d3.select("#wordSelect").on("change", function() {
+                updateChart(this.value);
+            });
+    });
+}
+
+// Call both functions when the page loads
+document.addEventListener('DOMContentLoaded', (event) => {
+    createWordCloud();
+    createChartAndDropdown();
+});
+
+</script>
 </body>
 </html>

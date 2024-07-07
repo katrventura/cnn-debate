@@ -7,21 +7,6 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
 </head>
-<body>
-    <h1>Trump vs Biden Word Cloud</h1>
-    <div id="my_dataviz"></div>
-
-    <div class="dropdown">
-        <label for="wordSelect">Select a word: </label>
-        <select id="wordSelect"></select>
-    </div>
-    <div class="result" id="result">
-        Trump: <span id="trumpCount">0</span><br>
-        Biden: <span id="bidenCount">0</span>
-    </div>
-
-    <div id="chart"></div>
-
 
 <script>
     // Word cloud load the data
@@ -175,5 +160,39 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 </script>
+
+<body>
+    <div class="article-body">
+    <h1>Trump vs Biden Word Cloud</h1>
+    <div id="my_dataviz"></div>
+
+    <div class="dropdown">
+        <label for="wordSelect">Select a word: </label>
+        <select id="wordSelect"></select>
+    </div>
+    <div class="result" id="result">
+        Trump: <span id="trumpCount">0</span><br>
+        Biden: <span id="bidenCount">0</span>
+    </div>
+
+    <div id="chart"></div>
+</div>
+
+<style>
+    .article-body {
+        max-width: 800px;
+        margin-left: 20%;
+        margin-right: 20%;
+    }
+
+    #my_dataviz {
+        /* margin: 0 auto; */
+    }
+
+    #chart {
+        margin: 0 auto;
+        
+    }
+</style>
 </body>
 </html>

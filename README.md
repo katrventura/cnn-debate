@@ -33,3 +33,8 @@ The DataFrame is sorted by total word frequency, allowing quick identification o
 
 ## Customization
 You can easily modify the list of `requested_words` to focus on different key terms relevant to your analysis.
+
+## Improvements
+- Website: D3 graphics are not responsive
+- Text box: text box would work better if the container is fixed
+  

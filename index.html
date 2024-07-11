@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trump vs Biden Word Cloud</title>
+    <title>CNN Debate Word Analysis</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <meta property="og:title" content="CNN Debate Word Analysis">
+    <meta property="og:description" content="A data visualization of words used in the CNN debate">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@katrventura">
 
     <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -237,21 +244,21 @@
 
 
 <body>
-
-    <div class="header">
-    <div class="header with-image-bg">
-        <div class="content">
-            <h1>What Was Said (and Wasn't Said) in the CNN Presidential Debate</h1>
-        </div>
-    </div>
+<div class="header">
+    <div class="header with-image-bg"></div>
     <figcaption>Biden addresses Trump directly during the debate. <a href="https://media.cnn.com/api/v1/images/stellar/prod/240628011006-52-gallery-biden-trump-cnn-debate-062724.jpg?q=w_1576,c_fill">Will Lanzoni/CNN</a></figcaption>
 </div>
 
-<br></br>
+<div class="article-body">
+<div class="header">
+    <h1>What Biden and Trump Say (and Didn't Say) in the CNN Presidential Debate</h1>
+    <div class="byline">
+    <p>By Katrina Ventura</p>
+    </div>
+</div>
+</div>
+
     <div class="article-body">
-        <div class="byline">
-            <p>By <a href="">Katrina Ventura</a></p>
-        </div>
         <p>In a highly anticipated face-off, President Joe Biden and former President Donald Trump participated in their first debate of the 2024 election season on CNN in Atlanta.</p>
 
         <p>The debate, which was marked by a series of sharp exchanges and policy discussions, provided a glimpse into the priorities and rhetorical strategies of both candidates. A detailed analysis of the <a href="https://www.cnn.com/2024/06/27/politics/read-biden-trump-debate-rush-transcript/index.html">debate transcript</a> reveals interesting insights into their focus areas and speaking styles.</p>
@@ -264,7 +271,6 @@
     </div>
 
     <div class="article-body">
-        <h3>Key Mentions</h3>
         <p>Joe Biden spoke a total of 3580 words (excluding stop words) during the debate. His speech focused on several key issues ranked below./p>
         <img src="key-mentions-biden.png"></img>
 
@@ -317,13 +323,16 @@
 
 <div class="article-body">
     <h3>Words Unsaid</h3>
+
+    <p>While the words they chose to emphasize provided insight into their policy focuses, the words left unsaid were equally telling.</p>
+
     <p>On questions surrounding the ongoing conflict in Gaza, Biden mentions Israel 6 times but not once uttered the word Palestinian or Palestine referring only to Hamas. When asked about his government's response to the conflict, Biden talked about the ceasefire plan and talked about Israel and Netanyahu and referred to the Palestinians as innocent people.</p>
 
     <p>Trump, on the other hand, not once said the word healthcare during the debate, and instead switched between Medicare and Medicaid. He however mentions abortion, but not once used the word childcare.</p>
 
-    <p>The first debate of the 2024 election season provided a clear contrast between Biden and Trump's priorities and rhetorical strategies. Biden focused on economic and social issues, while Trump emphasized immigration and international relations. While the words they chose to emphasize provided insight into their policy focuses, the words left unsaid were equally telling.</p>
+    <p>The first debate of the 2024 election season provided a clear contrast between Biden and Trump's priorities and rhetorical strategies. However, the real test lies in their actions. </p>
 
-    <p>Ultimately, while debates provide a platform for candidates to articulate their visions, the real test lies in their actions. As the election season progresses, it will be crucial to scrutinize how these verbal commitments translate into tangible policies. Actions, as the saying goes, speak louder than words, and the true measure of each candidate's commitment to their stated priorities will be seen in the steps they take to address the nation's challenges.</p>
+    <p>As the election season progresses, it will be crucial to scrutinize how these verbal commitments translate into tangible policies and their respective party's platforms.</p>
 </div>       
 
 <div class="footer">
@@ -375,9 +384,8 @@
 </style>
 
 <style>
-    header {
+    .header {
                 padding: 3em 0;
-                background-color: black; 
             }
     .with-image-bg {
             background-image: url('image.jpg');

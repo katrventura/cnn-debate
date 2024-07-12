@@ -31,7 +31,7 @@
 
             // Set the dimensions and margins of the graph
             var margin = {top: 10, right: 10, bottom: 10, left: 10},
-                width = 800 - margin.left - margin.right,
+                width = 600 - margin.left - margin.right,
                 height = 600 - margin.top - margin.bottom;
 
             // Append the svg object to the body of the page
@@ -64,7 +64,7 @@
                         // Color words based on which candidate used them more
                         if (d.trump > d.biden) return "#d30b0d";  // TRUMP
                         else if (d.biden > d.trump) return "#013364";  // BIDEN
-                        else return "#643B9F"; // If used equally
+                        else return "#808080"; // If used equally
                     })
                     .style("opacity", 1)
                     .attr("text-anchor", "middle")
@@ -149,23 +149,25 @@
             svg.append("g")
                 .attr("class", "y-axis");
 
-            // Function to update chart and text
-            function updateChartAndText(selectedWord) {
+           
+                
+             // Function to update chart and text
+             function updateChartAndText(selectedWord) {
                 const chartData = [
-                    {name: "Trump", value: wordData.TRUMP[selectedWord]},
-                    {name: "Biden", value: wordData.BIDEN[selectedWord]}
+                {name: "Biden", value: wordData.BIDEN[selectedWord]},
+                    {name: "Trump", value: wordData.TRUMP[selectedWord]}
                 ];
 
                 // Update result div
-                d3.select("#trumpCount").text(wordData.TRUMP[selectedWord]);
                 d3.select("#bidenCount").text(wordData.BIDEN[selectedWord]);
+                d3.select("#trumpCount").text(wordData.TRUMP[selectedWord]);
 
                 // Find sentences containing the selected word
-                let trumpSentences = findSentences(textData.TRUMP, selectedWord);
                 let bidenSentences = findSentences(textData.BIDEN, selectedWord);
+                let trumpSentences = findSentences(textData.TRUMP, selectedWord);
 
                 // Update text box with found sentences
-                updateTextBox(trumpSentences, bidenSentences);
+                updateTextBox(bidenSentences, trumpSentences);
 
                 // Update chart
                 x.domain(chartData.map(d => d.name));
@@ -190,7 +192,7 @@
                     .attr("y", d => y(d.value))
                     .attr("width", x.bandwidth())
                     .attr("height", d => height - y(d.value))
-                    .attr("fill", (d, i) => i === 0 ? "#d30b0d" : "#013364");
+                    .attr("fill", (d, i) => i === 0 ? "#013364" : "#d30b0d");
 
                 bars.exit().remove();
             }
@@ -208,7 +210,7 @@
 
             function updateTextBox(trumpSentences, bidenSentences) {
                 // Limit sentences to 150 characters
-                const limitSentence = (sentence) => sentence.length > 150 ? sentence.substring(0, 147) + '...' : sentence;
+                const limitSentence = (sentence) => sentence.length > 200 ? sentence.substring(0, 147) + '...' : sentence;
 
                 let bidenLimitedSentences = bidenSentences.map(limitSentence);
                 let trumpLimitedSentences = trumpSentences.map(limitSentence);
@@ -242,19 +244,19 @@
 
 
 <body>
-<div class="header">
-    <div class="header with-image-bg"></div>
-    <figcaption>Biden addresses Trump directly during the debate. <a href="https://media.cnn.com/api/v1/images/stellar/prod/240628011006-52-gallery-biden-trump-cnn-debate-062724.jpg?q=w_1576,c_fill">Will Lanzoni/CNN</a></figcaption>
-</div>
 
 <div class="article-body">
 <div class="header">
     <h1>What Biden and Trump Said (and Didn’t Say) in the CNN Presidential Debate</h1>
     <div class="byline">
-    <p>By Katrina Ventura</p>
+    <p>By <a href="https://www.linkedin.com/in/katrventura/">Katrina Ventura</a></p>
     </div>
 </div>
 </div>
+
+<img src = "image.jpg"></img>
+<figcaption>Biden and Trump during the debate. <a href="https://media.cnn.com/api/v1/images/stellar/prod/240628011006-52-gallery-biden-trump-cnn-debate-062724.jpg?q=w_1576,c_fill">Will Lanzoni/CNN</a></figcaption>
+
 
     <div class="article-body">
         <p>In a highly anticipated face-off, President Joe Biden and former President Donald Trump participated in their first debate of the 2024 election season on CNN in Atlanta.</p>
@@ -263,20 +265,23 @@
         </div>
 
     <div class="article-body">
-        <h3>Trump vs Biden Word Cloud</h3>
+        <h3>Biden vs Trump Word Cloud</h3>
         <div id="wordcloud"></div>
-        <figcaption>Word cloud showing the most frequently used words by Trump and Biden during the debate.</figcaption>
+        <figcaption>Words are sized by frequency and colored based on the speaker who used it the most: blue for Biden, red for Trump, and grey for words equally used by both.</figcaption>
     </div>
 
     <div class="article-body">
-        <p>Joe Biden spoke a total of 3580 words (excluding stop words) during the debate. His speech focused on several key issues ranked below.</p>
+        <p>Joe Biden spoke a total of 3580 words (excluding stop words) during the debate. His speech focused on several key issues, as highlighted below.</p>
+        </div>
+
         <img src="key-mention-biden.png"></img>
 
-        <p>Biden's transcript reveals a strong emphasis on words related to the economy. He used jobs 13 times, economy 10 times, and tax 9 times. Biden also brought up the topic of childcare 7 times, and climate 6 times.</p>
+        <div class="article-body">
+        <p>Biden's transcript reveals a strong emphasis on words related to the economy. His top mentions included the words "jobs", "economy", and "tax". Biden also brought up the topic of "childcare", and "climate".</p>
 
-        <p>The CNN transcript also took note of 3 instances in which Biden's speech was inaudible, which is just one more than the number of times Trump was inaudible.</p>
+        <p>CNN also took note of three instances in which Biden's speech was inaudible for the transcript, whereas Trump was inaudible twice.</p>
 
-        <p>Notably, Biden refrained from directly referring to Trump as "Trump", instead opting to call him "this guy" 14 times, and once referred to his opponent as a child.</p>  
+        <p>Notably, Biden refrained from directly referring to Trump as "Trump", instead opting to call him this or that "guy" 14 times, and has even gone as far as to call his opponent a "child".</p>  
         
         <blockquote>
             TRUMP:  Let’s not act like children.
@@ -287,17 +292,17 @@
     </div>
 
 <div class="article-body">
-    <p>Donald Trump spoke a total of 4163 words (excluding stop words), with the following mentions bellow.</p>
+    <p>Donald Trump spoke a total of 4163 words (excluding stop words), with the following mentions below.</p>
 
     <img src="key-mention-trump.png"></img>
 
-    <p>In contrast to Biden, Trump's top key mentions revolve around international affairs. His speech also included 15 mentions of Russia, 12 mentions of Ukraine and 11 mentions of China.</p>
+    <p>In contrast to Biden, Trump's top key mentions revolve around international affairs. His transcript included several mentions of Russia, Ukraine and China.</p>
 
-    <p>Trump concentrated heavily on the border, mentioning it 24 times, which underscores his focus on immigration policies—a cornerstone of his previous administration.</p> 
+    <p>The former president also concentrated heavily on immigration policies, having mentioned the word "border" 24 times.</p> 
 
-    <p>At one point in the debate, Trump brought up Russia in the context of disinformation as he defended himself for having been quoted in a previous <a href="https://www.theatlantic.com/politics/archive/2020/09/trump-americans-who-died-at-war-are-losers-and-suckers/615997/">article by The Atlantic</a> for referring to Americans who died in the was as 'losers and suckers'.</p>
+    <p>At one point in the debate, Trump said Russia five times while he defended himself for having been quoted in a previous <a href="https://www.theatlantic.com/politics/archive/2020/09/trump-americans-who-died-at-war-are-losers-and-suckers/615997/">article by The Atlantic</a> for referring to Americans who died in the war as 'losers and suckers'.</p>
 
-    <blockquote>TRUMP: It was made up by him, just like Russia, Russia, Russia was made up, just like the 51 intelligence agents are made up, just like the new thing with the 16 economists are talking.</blockquote>
+    <blockquote>TRUMP: It was made up by him, just like Russia, Russia, Russia was made up, just like the 51 intelligence agents are made up, just like the new thing with the 16 economists are talking. It's the same thing. Fifty-one intelligence agents said the laptop was Russia disinformation. It wasn't. That came from his son Hunter. It wasn't Russia disinformation.</blockquote>
 
     
 </div>
@@ -309,8 +314,8 @@
         <select id="wordSelect"></select>
     </div>
     <div class="result" id="result">
-        Trump: <span id="trumpCount">0</span><br>
-        Biden: <span id="bidenCount">0</span>
+        Biden: <span id="bidenCount">0</span><br>
+        Trump: <span id="trumpCount">0</span>
     </div>
 
     <div id="chart"></div>
@@ -324,13 +329,16 @@
 
     <p>While the words they chose to emphasize provided insight into their policy focuses, the words left unsaid were equally telling.</p>
 
-    <p>On questions surrounding the ongoing conflict in Gaza, Biden mentions Israel 6 times but not once uttered the word Palestinian or Palestine referring only to Hamas. When asked about his government's response to the conflict, Biden talked about the ceasefire plan and talked about Israel and Netanyahu and referred to the Palestinians as innocent people.</p>
+    <p>On questions surrounding the ongoing conflict in Gaza, Biden mentions Israel six times but not once uttered the word Palestinian or Palestine only mentioning the Hamas. When asked about his government's response to the conflict, Biden discussed the ceasefire plan and referred to the Palestinians as innocent people.</p>
 
-    <p>Trump, on the other hand, not once said the word healthcare during the debate, and instead switched between Medicare and Medicaid. He however mentions abortion, but not once used the word childcare.</p>
+    <blockquote>BIDEN: In the meantime, what’s happened in Israel? We’re finally – the only thing I’ve denied Israel was 2,000-pound bombs. They don’t work very well in populated areas. They kill a lot of innocent people. We are providing Israel with all the weapons they need and when they need them.</blockquote>
 
-    <p>The first debate of the 2024 election season provided a clear contrast between Biden and Trump's priorities and rhetorical strategies. However, the real test lies in their actions. </p>
+    <p>Trump, on the other hand, did not once mention "healthcare" during the debate, instead switched between "Medicare" and "Medicaid". Trump also mentioned abortion several times but did not talk about "childcare".</p>
 
-    <p>As the election season progresses, it will be crucial to scrutinize how these verbal commitments translate into tangible policies and their respective party's platforms.</p>
+    <blockquote>TRUMP:  Well, he’s right: He did beat Medicaid (ph). He beat it to death. And he’s destroying Medicare, because all of these people are coming in, they’re putting them on Medicare, they’re putting them on Social Security. They’re going to destroy Social Security.</blockquote>
+
+    <p>The first debate of the 2024 election season provided a clear contrast between Biden and Trump's priorities and rhetorical strategies. As the election season progresses, it will be crucial to scrutinize how these verbal commitments translate into tangible policies and their respective party's platforms.</p>
+
 </div>       
 
 <div class="footer">
@@ -388,10 +396,11 @@
             }
 
     h1 {
-            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+            font-family:'Lucida Sans', Arial, sans-serif;
             font-size: 3em;
             line-height: 1.1;
-            text-align: center;
+            text-align: left;
             font-weight: 500;
             text-rendering: optimizeLegibility;
         }
@@ -415,9 +424,9 @@
         }
     
     img {
-            width: 100%;
+            width: 800px;
             height: auto;
-            margin: 1em 0;
+            margin: 0 auto;
             display: block;
         }
 
@@ -426,11 +435,13 @@
             text-align: center;
             margin-top: 0.5em;
             color: #666;
+            margin-bottom: 3em;
         }
     body {
                 margin: 0;
                 font-size: 20px;
-                font-family:Arial, Helvetica, sans-serif;
+                /* font-family:Arial, Helvetica, sans-serif; */
+                font-family: 'Lucida Sans', Arial, sans-serif;
                 /* color: lightgrey; */
                 text-rendering: optimizeLegibility;
                 /* background-color: black; */
@@ -450,6 +461,9 @@ blockquote::after {
 }
 blockquote {
   quotes: "“" "”" "‘" "’";
+  font-style:italic;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
     .footer {
                 background: #f4f4f4;
@@ -465,9 +479,16 @@ blockquote {
                     font-size: 18px;
                 }
     
-                .content {
-                    padding-left: 0.5em;
-                    padding-right: 0.5em;
+                .article-body {
+                    padding: 1em;
+                    margin-right: 1em;
+                    margin-left: 1em;
+                    margin:0 auto;
+
+                }
+
+                img {
+                    width: 100%;
                 }
             }
         

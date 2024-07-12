@@ -155,12 +155,14 @@
              function updateChartAndText(selectedWord) {
                 const chartData = [
                 {name: "Biden", value: wordData.BIDEN[selectedWord]},
-                    {name: "Trump", value: wordData.TRUMP[selectedWord]}
+                {name: "Trump", value: wordData.TRUMP[selectedWord]}
+                    
                 ];
 
                 // Update result div
-                d3.select("#bidenCount").text(wordData.BIDEN[selectedWord]);
                 d3.select("#trumpCount").text(wordData.TRUMP[selectedWord]);
+                d3.select("#bidenCount").text(wordData.BIDEN[selectedWord]);
+                
 
                 // Find sentences containing the selected word
                 let bidenSentences = findSentences(textData.BIDEN, selectedWord);
@@ -197,8 +199,8 @@
                 bars.exit().remove();
             }
 
-            // Function to find sentences containing the word
-            function findSentences(speeches, word) {
+                        // Function to find sentences containing the word
+                        function findSentences(speeches, word) {
                 let sentences = [];
                 speeches.forEach(speech => {
                     let matchingSentences = speech.split('\n')
@@ -208,7 +210,7 @@
                 return sentences;
             }
 
-            function updateTextBox(trumpSentences, bidenSentences) {
+            function updateTextBox(bidenSentences, trumpSentences) {
                 // Limit sentences to 150 characters
                 const limitSentence = (sentence) => sentence.length > 200 ? sentence.substring(0, 147) + '...' : sentence;
 
@@ -261,7 +263,7 @@
     <div class="article-body">
         <p>In a highly anticipated face-off, President Joe Biden and former President Donald Trump participated in their first debate of the 2024 election season on CNN in Atlanta.</p>
 
-        <p>The debate, which was marked by a series of sharp exchanges and policy discussions, provided a glimpse into the priorities and rhetorical strategies of both candidates. A detailed analysis of the <a href="https://www.cnn.com/2024/06/27/politics/read-biden-trump-debate-rush-transcript/index.html">debate transcript</a> reveals interesting insights into their focus areas and speaking styles.</p>
+        <p>The debate, which was marked by a series of sharp exchanges and policy discussions, provided a glimpse into the priorities and rhetorical strategies of both candidates. A word analysis of the <a href="https://www.cnn.com/2024/06/27/politics/read-biden-trump-debate-rush-transcript/index.html">debate transcript</a> reveals interesting insights into their focus areas and speaking styles.</p>
         </div>
 
     <div class="article-body">
@@ -281,7 +283,7 @@
 
         <p>CNN also took note of three instances in which Biden's speech was inaudible for the transcript, whereas Trump was inaudible twice.</p>
 
-        <p>Notably, Biden refrained from directly referring to Trump as "Trump", instead opting to call him this or that "guy" 14 times, and has even gone as far as to call his opponent a "child".</p>  
+        <p>Notably, Biden refrained from directly referring to Trump as "Trump", instead opting to call him this or that "guy" which he did fourteen times, and has even gone as far as to call his opponent a "child".</p>  
         
         <blockquote>
             TRUMP:  Let’s not act like children.
@@ -296,11 +298,11 @@
 
     <img src="assets/key-mention-trump.png"></img>
 
-    <p>In contrast to Biden, Trump's top key mentions revolve around international affairs. His transcript included several mentions of Russia, Ukraine and China.</p>
+    <p>In contrast to Biden, Trump's top key mentions revolve around international affairs. His transcript also included several mentions of Russia, Ukraine and China.</p>
 
-    <p>The former president also concentrated heavily on immigration policies, having mentioned the word "border" 24 times.</p> 
+    <p>The former president concentrated heavily on immigration policies, having mentioned the word "border" 24 times.</p> 
 
-    <p>At one point in the debate, Trump said Russia five times while he defended himself for having been quoted in a previous <a href="https://www.theatlantic.com/politics/archive/2020/09/trump-americans-who-died-at-war-are-losers-and-suckers/615997/">article by The Atlantic</a> for referring to Americans who died in the war as 'losers and suckers'.</p>
+    <p>At one point in the debate, Trump said Russia five times while he defended himself after having been quoted in a previous <a href="https://www.theatlantic.com/politics/archive/2020/09/trump-americans-who-died-at-war-are-losers-and-suckers/615997/">article by The Atlantic</a> for referring to Americans who died in the war as 'losers and suckers'.</p>
 
     <blockquote>TRUMP: It was made up by him, just like Russia, Russia, Russia was made up, just like the 51 intelligence agents are made up, just like the new thing with the 16 economists are talking. It's the same thing. Fifty-one intelligence agents said the laptop was Russia disinformation. It wasn't. That came from his son Hunter. It wasn't Russia disinformation.</blockquote>
 
@@ -319,9 +321,9 @@
     </div>
 
     <div id="chart"></div>
-
     <div id="bidenSentencesBox"></div>
     <div id="trumpSentencesBox"></div>
+    
 </div>
 
 <div class="article-body">
@@ -369,16 +371,6 @@
         
     }
 
-    #bidenSentencesBox {
-        width: 100%;
-        height: 200 px;
-        overflow-y: scroll;
-        border: 10px black;
-        padding: 10px;
-        color: #013364;
-
-    }
-    
     #trumpSentencesBox {
         width: 100%;
         height: 200 px;
@@ -387,6 +379,16 @@
         padding: 10px;
         color: #d30b0d;
 
+    }
+    
+    #bidenSentencesBox {
+        width: 100%;
+        height: 200 px;
+        overflow-y: scroll;
+        border: 10px black;
+        padding: 10px;
+        /* color: #d30b0d; */
+        color: #013364;
     }
 </style>
 
